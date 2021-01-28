@@ -15,8 +15,9 @@ class Pixiv:
             "cookie": ""
         }
 
-    def get_ranklist(self):
-        url = "https://www.pixiv.net/ranking.php?mode=daily&content=illust&p=1&format=json"
+    def get_ranklist(self, restrict=False):
+        url = "https://www.pixiv.net/ranking.php?mode={mode}&content=illust&p=1&format=json".format(
+            mode="daily_r18" if restrict else "daily")
         res = self.session.get(url)
         data = json.loads(res.text)
 
@@ -34,9 +35,9 @@ class Pixiv:
 
         return img_urls
 
-    def dl_images(self, urls, illust_id):
+    def dl_images(self, dir_name, urls, illust_id):
         # Get script folder path.
-        file_path = os.path.dirname(os.path.abspath(__file__)) + "/rank_img"
+        file_path = os.path.dirname(os.path.abspath(__file__)) + dir_name
         # Create folder.
         if not os.path.exists(file_path):
             os.mkdir(file_path)
@@ -57,7 +58,14 @@ class Pixiv:
 
 if __name__ == "__main__":
     pixiv = Pixiv()
-    ranklist = pixiv.get_ranklist()
+    # Get list.
+    ranklist, ranklist_r18 = pixiv.get_ranklist(), pixiv.get_ranklist(True)
+    # Get id of artworks.
     id_list = [l["illust_id"] for l in ranklist]
+    id_list_r18 = [l["illust_id"] for l in ranklist_r18]
+    # Get url of images.
     img_urls = pixiv.get_images(id_list)
-    pixiv.dl_images(img_urls, id_list)
+    img_urls_r18 = pixiv.get_images(id_list_r18)
+    # Download
+    pixiv.dl_images("/rank_img", img_urls, id_list)
+    pixiv.dl_images("/rank_img_r18", img_urls_r18, id_list_r18)
