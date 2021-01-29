@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 import json
 import re
@@ -36,11 +37,16 @@ class Pixiv:
         return img_urls
 
     def dl_images(self, dir_name, urls, illust_id):
-        # Get script folder path.
-        file_path = os.path.dirname(os.path.abspath(__file__)) + dir_name
+        # Get date.
+        now = datetime.now()
+        date = now.strftime('%Y%m%d')
+        # Get file path.
+        file_path = os.path.dirname(
+            os.path.abspath(__file__)) + dir_name + date
         # Create folder.
         if not os.path.exists(file_path):
             os.mkdir(file_path)
+
         # Download images.
         index = 1
         for u in urls:
@@ -67,5 +73,5 @@ if __name__ == "__main__":
     img_urls = pixiv.get_images(id_list)
     img_urls_r18 = pixiv.get_images(id_list_r18)
     # Download
-    pixiv.dl_images("/rank_img", img_urls, id_list)
-    pixiv.dl_images("/rank_img_r18", img_urls_r18, id_list_r18)
+    pixiv.dl_images("/rank_img/", img_urls, id_list)
+    pixiv.dl_images("/rank_img_r18/", img_urls_r18, id_list_r18)
