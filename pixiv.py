@@ -41,12 +41,11 @@ class Pixiv:
         now = datetime.now()
         date = now.strftime('%Y%m%d')
         # Get file path.
-        file_path = os.path.dirname(
-            os.path.abspath(__file__)) + dir_name + date
+        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 dir_name, date)
         # Create folder.
         if not os.path.exists(file_path):
-            os.mkdir(file_path)
-
+            os.makedirs(file_path)
         # Download images.
         index = 1
         for u in urls:
@@ -57,7 +56,7 @@ class Pixiv:
                                      str(illust_id)
                                  })
             fm = re.search(r"[.](jpg|png|jpeg)$", u, flags=0).group()
-            with open(file_path + "/" + str(index) + fm, "wb") as img:
+            with open(os.path.join(file_path, str(index) + fm), "wb") as img:
                 img.write(f.content)
             index += 1
 
@@ -73,5 +72,5 @@ if __name__ == "__main__":
     img_urls = pixiv.get_images(id_list)
     img_urls_r18 = pixiv.get_images(id_list_r18)
     # Download
-    pixiv.dl_images("/rank_img/", img_urls, id_list)
-    pixiv.dl_images("/rank_img_r18/", img_urls_r18, id_list_r18)
+    pixiv.dl_images("rank_img", img_urls, id_list)
+    pixiv.dl_images("rank_img_r18", img_urls_r18, id_list_r18)
