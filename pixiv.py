@@ -8,6 +8,10 @@ import os
 class Pixiv:
     def __init__(self):
         self.session = requests.Session()
+        self.session.proxies = {
+            'http': "http://127.0.0.1:1080",
+            'https': "http://127.0.0.1:1080"
+        }
         self.session.headers = {
             "accept":
             "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
