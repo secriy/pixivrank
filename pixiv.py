@@ -19,14 +19,18 @@ class Pixiv:
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36",
             "cookie": ""
         }
+        self.get_cookies()
+
+    def get_cookies(self):
+        with open('.cookies', 'r') as f:
+            self.session.headers["cookie"] = f.read()
 
     def get_ranklist(self, restrict=False):
         url = "https://www.pixiv.net/ranking.php?mode={mode}&content=illust&p=1&format=json".format(
             mode="daily_r18" if restrict else "daily")
         res = self.session.get(url)
         data = json.loads(res.text)
-
-        return data["contents"][:10]
+        return data["contents"]
 
     def get_images(self, illust_id):
         img_urls = []
@@ -37,7 +41,6 @@ class Pixiv:
             res = self.session.get(page_url)
             img_url = re.search(pattern, res.text, flags=0).group()
             img_urls.append(img_url)
-
         return img_urls
 
     def dl_images(self, dir_name, urls, illust_id):

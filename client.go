@@ -10,6 +10,7 @@ import (
 )
 
 // NewClient return the http client instance.
+// 返回携带cookie存储的 http client
 func NewClient() *http.Client {
 	cookiejar, _ := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	client := &http.Client{Jar: cookiejar}
@@ -17,6 +18,7 @@ func NewClient() *http.Client {
 }
 
 // NewClientWithProxy return the http client instance with a proxy server.
+// 返回包含代理的 http client
 func NewClientWithPorxy(proxyUrl string) *http.Client {
 	proxy, _ := url.Parse(proxyUrl)
 	tr := &http.Transport{
