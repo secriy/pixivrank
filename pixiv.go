@@ -52,11 +52,13 @@ func (pt *PixivTask) Task() {
 	// read the cookies file
 	if err := pt.readCookies(); err != nil {
 		fmt.Println("Failed to read cookies: " + err.Error())
+		return
 	}
 	// get the list of illust-id
 	ridList, err := pt.RankIDList()
 	if err != nil {
 		fmt.Println("Failed to get ranklist: " + err.Error())
+		return
 	}
 	// get url of images
 	wg := &sync.WaitGroup{}
